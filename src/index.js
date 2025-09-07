@@ -16,4 +16,8 @@ client.on('messageCreate', (msg) => {
     msg.reply('Hello, I am a bot!')
 })
 
+client.on('interactionCreate', (interaction) => {
+    interaction.reply('Pong')
+})
+
 client.login(process.env.DISCORD_TOKEN)
