@@ -1,5 +1,5 @@
 const {Client, GatewayIntentBits} = require("discord.js");
-require('dotenv').config()
+require("dotenv").config();
 
 const client = new Client({
   intents: [
@@ -9,15 +9,26 @@ const client = new Client({
   ],
 });
 
-client.on('messageCreate', (msg) => {
-    console.log(msg.content)
+process.on('unhandledRejection', error => {
+	console.error('Unhandled promise rejection:', error);
+});
 
-    if(msg.author.bot) return;
-    msg.reply('Hello, I am a bot!')
-})
+client.on("messageCreate", (msg) => {
+  console.log(msg.content);
 
-client.on('interactionCreate', (interaction) => {
-    interaction.reply('Pong')
-})
+  if (msg.author.bot) return;
 
-client.login(process.env.DISCORD_TOKEN)
+  if (msg.content.startsWith('create')) {
+    const url = msg.content.split(' ')[1];
+    if (!url) return msg.reply("Please enter a URL after the 'create' command");
+    return msg.reply("Generating short URL for " + url);
+  } else {
+    return msg.reply("Hello, I am a bot!");
+  }
+});
+
+client.on("interactionCreate", (interaction) => {
+  interaction.reply("Pong");
+});
+
+client.login(process.env.DISCORD_TOKEN);
