@@ -1,34 +1,15 @@
-const {Client, GatewayIntentBits} = require("discord.js");
-require("dotenv").config();
+const express = require('express');
+const app = express()
+const urlRouter = require('./routes/url')
+const {connectMongoDB} = require('./db/connection')
+const PORT = 3000;
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-  ],
-});
+// Database
+connectMongoDB('mongodb+srv://discord-bot-url-shortener:mydiscordbotapp@cluster0.bjz00mg.mongodb.net/')
+.then(() => console.log('DB Connected!'))
+.catch(err => console.log('Error', err))
 
-process.on('unhandledRejection', error => {
-	console.error('Unhandled promise rejection:', error);
-});
+// Middlewares / Routes
+app.use('/api', urlRouter);
 
-client.on("messageCreate", (msg) => {
-  console.log(msg.content);
-
-  if (msg.author.bot) return;
-
-  if (msg.content.startsWith('create')) {
-    const url = msg.content.split(' ')[1];
-    if (!url) return msg.reply("Please enter a URL after the 'create' command");
-    return msg.reply("Generating short URL for " + url);
-  } else {
-    return msg.reply("Hello, I am a bot!");
-  }
-});
-
-client.on("interactionCreate", (interaction) => {
-  interaction.reply("Pong");
-});
-
-client.login(process.env.DISCORD_TOKEN);
+app.listen(PORT, () => console.log('Server is running...'))
