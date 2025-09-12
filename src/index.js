@@ -3,8 +3,7 @@ const app = express()
 const urlRouter = require('./routes/url')
 const {connectMongoDB} = require('./db/connection')
 require('dotenv').config()
-const PORT = 3000;
-console.log("Attempting to connect with URI:", process.env.MONGODB_URI);
+const {checkAuth} = require('./middlewares/auth')
 
 // Database
 connectMongoDB(process.env.MONGODB_URI)
@@ -12,6 +11,7 @@ connectMongoDB(process.env.MONGODB_URI)
 .catch(err => console.log('Error', err))
 
 // Middlewares / Routes
-app.use('/api', urlRouter);
+app.use(express.json())
+app.use('/api', checkAuth, urlRouter);
 
-app.listen(PORT, () => console.log('Server is running...'))
+app.listen(process.env.PORT, () => console.log('Server is running...'))
