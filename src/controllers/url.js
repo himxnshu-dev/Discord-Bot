@@ -1,6 +1,7 @@
 const express = require("express");
 const URL = require("../db/url");
 const {nanoid} = require("nanoid");
+require('dotenv').config()
 
 const handleGenerateShortURL = async (req, res) => {
   const {url} = req.body;
@@ -15,13 +16,18 @@ const handleGenerateShortURL = async (req, res) => {
       {
         shortUrl: shortId,
         redirectUrl: url,
-      },
-      {timestamps: true}
+      }
     );
 
-    const shortURL = `http://localhost:`
+    const shortURL = `http://localhost:${process.env.PORT}/${shortId}`
+
+    return res.status(201).json({
+        msg: 'Short URL generated successfully',
+        shortURL: shortURL
+    })
   } catch (error) {
-    return res.send('Error occurred: ', error)
+    console.log('Error occurred: ', error)
+    return res.end('Internal Server Error!')
   }
 };
 

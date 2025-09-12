@@ -1,4 +1,4 @@
-import {REST, Routes} from "discord.js";
+import {REST, Routes, ApplicationCommandOptionType} from "discord.js";
 import "dotenv/config";
 
 const commands = [
@@ -8,8 +8,16 @@ const commands = [
   },
   {
     name: "create",
-    description: "gives back a short URL"
-  }
+    description: "gives back a short URL",
+    options: [
+      {
+        name: "url",
+        description: "the long url",
+        type: 3,
+        required: true,
+      },
+    ],
+  },
 ];
 
 const rest = new REST({version: "10"}).setToken(process.env.DISCORD_TOKEN);
@@ -18,7 +26,7 @@ const rest = new REST({version: "10"}).setToken(process.env.DISCORD_TOKEN);
   try {
     console.log("Started refreshing application (/) commands.");
 
-    await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT), {
+    await rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT), {
       body: commands,
     });
 
