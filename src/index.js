@@ -3,7 +3,6 @@ const app = express()
 const urlRouter = require('./routes/url')
 const {connectMongoDB} = require('./db/connection')
 require('dotenv').config()
-const {checkAuth} = require('./middlewares/auth')
 
 // Database
 connectMongoDB(process.env.MONGODB_URI)
@@ -12,6 +11,6 @@ connectMongoDB(process.env.MONGODB_URI)
 
 // Middlewares / Routes
 app.use(express.json())
-app.use('/api', checkAuth, urlRouter);
+app.use('/api', urlRouter);
 
 app.listen(process.env.PORT, () => console.log('Server is running...'))
